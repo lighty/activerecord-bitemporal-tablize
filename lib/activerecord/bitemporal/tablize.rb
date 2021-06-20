@@ -1,8 +1,9 @@
-require_relative 'tablize/version'
-require 'lib/activerecord/bitemporal/tablize/string_half_width_size'
+require 'activerecord/bitemporal/tablize/version'
+require 'activerecord/bitemporal/string_half_width_size'
+require 'active_support/all'
 
 class ActiveRecord::Bitemporal::Tablize
-  using StringHalfWidthSize
+  using ActiveRecord::Bitemporal::StringHalfWidthSize
 
   attr :records, :result, :attributes
 
