@@ -22,7 +22,48 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+ローカル環境でgemをインストールし、`rails console`した後でrequireする
+ref: https://qiita.com/kyanny/items/d370efe14ef15d9afacb
+
+```
+[1] pry(main)> Employee.first.history.print_table
+   (0.8ms)  SELECT sqlite_version(*)
+  Employee Load (0.3ms)  SELECT "employees".* FROM "employees" WHERE "employees"."valid_from" <= ? AND "employees"."valid_to" > ? AND "employees"."deleted_at" IS NULL ORDER BY "employees"."bitemporal_id" ASC LIMIT ?  [["valid_from", "2021-06-20 13:21:42.229006"], ["valid_to", "2021-06-20 13:21:42.229006"], ["LIMIT", 1]]
+  Employee Load (0.2ms)  SELECT "employees".* FROM "employees" WHERE "employees"."deleted_at" IS NULL AND "employees"."bitemporal_id" = ? ORDER BY "employees"."valid_from" DESC  [["bitemporal_id", 1]]
++------------+----+---------+--------+-----------+-------------------------+-------------------------+---------------+------------+------------+------------+-------------------------+-------------------------+
+|            | id | unit_id | name   | joined_at | created_at              | updated_at              | bitemporal_id | valid_from | valid_to   | deleted_at | transaction_from        | transaction_to          |
++-9999/12/31-+----+---------+--------+-----------+-------------------------+-------------------------+---------------+------------+------------+------------+-------------------------+-------------------------+
+|            | 1  | 2       | 山田   |           | 2021-06-20 01:44:43 UTC | 2021-06-20 01:44:43 UTC | 1             | 2021/04/01 | 9999/12/31 |            | 2021-06-20 01:44:43 UTC | 9999-12-31 00:00:00 UTC |
++-2021/04/01-+----+---------+--------+-----------+-------------------------+-------------------------+---------------+------------+------------+------------+-------------------------+-------------------------+
++-2021/04/01-+----+---------+--------+-----------+-------------------------+-------------------------+---------------+------------+------------+------------+-------------------------+-------------------------+
+|            | 1  | 1       | たけし |           | 2021-06-20 01:44:43 UTC | 2021-06-20 01:44:43 UTC | 1             | 2020/01/01 | 2021/04/01 |            | 2021-06-20 01:44:43 UTC | 9999-12-31 00:00:00 UTC |
++-2020/01/01-+----+---------+--------+-----------+-------------------------+-------------------------+---------------+------------+------------+------------+-------------------------+-------------------------+
+=> nil
+[2] pry(main)> Employee.first.history.print_table_diff_only
+  Employee Load (0.2ms)  SELECT "employees".* FROM "employees" WHERE "employees"."valid_from" <= ? AND "employees"."valid_to" > ? AND "employees"."deleted_at" IS NULL ORDER BY "employees"."bitemporal_id" ASC LIMIT ?  [["valid_from", "2021-06-20 13:21:44.302316"], ["valid_to", "2021-06-20 13:21:44.302316"], ["LIMIT", 1]]
+  Employee Load (0.1ms)  SELECT "employees".* FROM "employees" WHERE "employees"."deleted_at" IS NULL AND "employees"."bitemporal_id" = ? ORDER BY "employees"."valid_from" DESC  [["bitemporal_id", 1]]
++------------+---------+--------+-------------------------+------------+------------+
+|            | unit_id | name   | updated_at              | valid_from | valid_to   |
++-9999/12/31-+---------+--------+-------------------------+------------+------------+
+|            | 2       | 山田   | 2021-06-20 01:44:43 UTC | 2021/04/01 | 9999/12/31 |
++-2021/04/01-+---------+--------+-------------------------+------------+------------+
++-2021/04/01-+---------+--------+-------------------------+------------+------------+
+|            | 1       | たけし | 2021-06-20 01:44:43 UTC | 2020/01/01 | 2021/04/01 |
++-2020/01/01-+---------+--------+-------------------------+------------+------------+
+=> nil
+[3] pry(main)> Employee.first.history.print_table(:name)
+  Employee Load (0.2ms)  SELECT "employees".* FROM "employees" WHERE "employees"."valid_from" <= ? AND "employees"."valid_to" > ? AND "employees"."deleted_at" IS NULL ORDER BY "employees"."bitemporal_id" ASC LIMIT ?  [["valid_from", "2021-06-20 13:22:54.269095"], ["valid_to", "2021-06-20 13:22:54.269095"], ["LIMIT", 1]]
+  Employee Load (0.1ms)  SELECT "employees".* FROM "employees" WHERE "employees"."deleted_at" IS NULL AND "employees"."bitemporal_id" = ? ORDER BY "employees"."valid_from" DESC  [["bitemporal_id", 1]]
++------------+--------+
+|            | name   |
++-9999/12/31-+--------+
+|            | 山田   |
++-2021/04/01-+--------+
++-2021/04/01-+--------+
+|            | たけし |
++-2020/01/01-+--------+
+=> nil
+```
 
 ## Development
 

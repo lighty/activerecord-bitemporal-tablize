@@ -7,9 +7,10 @@ class ActiveRecord::Bitemporal::Tablize
 
   attr :records, :result, :attributes
 
-  def initialize(records:, attributes: [])
+  def initialize(records:, attributes: [], diff_only: false)
     @records = records.map { |record| RecordWrapper.new(record, self) }
-    @attributes = attributes
+    attributes = attributes.empty? ? all_attributes : attributes
+    @attributes = diff_only ? select_having_diff : attributes
     @result = []
   end
 
@@ -34,6 +35,14 @@ class ActiveRecord::Bitemporal::Tablize
 
   private
 
+  def all_attributes
+    records.first&.then { |r| r.attributes.keys.map(&:to_sym) }
+  end
+
+  def select_having_diff
+    all_attributes&.select { |attribute| records.map(&:"#{attribute}").uniq.size != 1 }
+  end
+
   def append_header
     result << "+#{build_roof.join('+')}+"
     result << "|#{build_wall.join('|')}|"
@@ -57,7 +66,7 @@ class ActiveRecord::Bitemporal::Tablize
     records.each do |record|
       result << "+#{record.build_roof.join('+')}+"
       result << "|#{record.build_wall.join('|')}|"
-      result << "+#{record.build_roof.join('+')}+"
+      result << "+#{record.build_floor.join('+')}+"
     end
   end
 
