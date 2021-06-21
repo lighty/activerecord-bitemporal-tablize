@@ -23,6 +23,7 @@ Or install it yourself as:
 ## Usage
 
 ローカル環境でgemをインストールし、`rails console`した後でrequireする
+
 ref: https://qiita.com/kyanny/items/d370efe14ef15d9afacb
 
 ```
