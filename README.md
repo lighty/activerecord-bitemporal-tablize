@@ -22,7 +22,16 @@ Or install it yourself as:
 
 ## Usage
 
-ローカル環境でgemをインストールし、`rails console`した後でrequireする
+1. ローカル環境でgemをインストールする
+2. 以下を.pryrcなどに追加
+  - インストールされたパスをロードパスに含める
+  - requireする
+```
+# cat ~/.pryrc
+$: << '/Users/lighty/.rbenv/versions/3.0.1/lib/ruby/gems/3.0.0/gems/activerecord-bitemporal-tablize-0.1.3/lib/'
+require 'activerecord-bitemporal-tablize'
+```
+
 
 ref: https://qiita.com/kyanny/items/d370efe14ef15d9afacb
 
