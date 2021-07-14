@@ -2,22 +2,23 @@ module ActiveRecord
   module Bitemporal
     module Bitemporalize
       module InstanceMethods
-        def histories
-          records = begin
-                      super
-                    rescue NoMethodError
-                      self.class.ignore_valid_datetime.bitemporal_for(bitemporal_id).order(valid_from: :desc)
-                    end
 
-          records.define_singleton_method(:print_table) do |*attributes|
-            print ActiveRecord::Bitemporal::Tablize.new(records: records, attributes: attributes).call
-          end
+        def print_histories(*attributes)
+          print ActiveRecord::Bitemporal::Tablize.new(records: ordered_histories, attributes: attributes).call
+        end
 
-          records.define_singleton_method(:print_table_diff_only) do |*attributes|
-            print ActiveRecord::Bitemporal::Tablize.new(records: records, attributes: attributes, diff_only: true).call
-          end
+        def print_histories_diff
+          print ActiveRecord::Bitemporal::Tablize.new(records: ordered_histories, diff_only: true).call
+        end
 
-          records
+        private
+
+        def ordered_histories
+          if respond_to?(:histories)
+            histories
+          else
+            self.class.ignore_valid_datetime.bitemporal_for(bitemporal_id)
+          end.order(valid_from: :desc)
         end
       end
     end

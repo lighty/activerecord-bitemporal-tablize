@@ -36,7 +36,7 @@ require 'activerecord-bitemporal-tablize'
 ref: https://qiita.com/kyanny/items/d370efe14ef15d9afacb
 
 ```
-[1] pry(main)> Employee.first.histories.print_table
+[1] pry(main)> Employee.first.histories.print_histories
    (0.8ms)  SELECT sqlite_version(*)
   Employee Load (0.3ms)  SELECT "employees".* FROM "employees" WHERE "employees"."valid_from" <= ? AND "employees"."valid_to" > ? AND "employees"."deleted_at" IS NULL ORDER BY "employees"."bitemporal_id" ASC LIMIT ?  [["valid_from", "2021-06-20 13:21:42.229006"], ["valid_to", "2021-06-20 13:21:42.229006"], ["LIMIT", 1]]
   Employee Load (0.2ms)  SELECT "employees".* FROM "employees" WHERE "employees"."deleted_at" IS NULL AND "employees"."bitemporal_id" = ? ORDER BY "employees"."valid_from" DESC  [["bitemporal_id", 1]]
@@ -49,7 +49,7 @@ ref: https://qiita.com/kyanny/items/d370efe14ef15d9afacb
 |            | 1  | 1       | たけし |           | 2021-06-20 01:44:43 UTC | 2021-06-20 01:44:43 UTC | 1             | 2020/01/01 | 2021/04/01 |            | 2021-06-20 01:44:43 UTC | 9999-12-31 00:00:00 UTC |
 +-2020/01/01-+----+---------+--------+-----------+-------------------------+-------------------------+---------------+------------+------------+------------+-------------------------+-------------------------+
 => nil
-[2] pry(main)> Employee.first.histories.print_table_diff_only
+[2] pry(main)> Employee.first.histories.print_histories_diff
   Employee Load (0.2ms)  SELECT "employees".* FROM "employees" WHERE "employees"."valid_from" <= ? AND "employees"."valid_to" > ? AND "employees"."deleted_at" IS NULL ORDER BY "employees"."bitemporal_id" ASC LIMIT ?  [["valid_from", "2021-06-20 13:21:44.302316"], ["valid_to", "2021-06-20 13:21:44.302316"], ["LIMIT", 1]]
   Employee Load (0.1ms)  SELECT "employees".* FROM "employees" WHERE "employees"."deleted_at" IS NULL AND "employees"."bitemporal_id" = ? ORDER BY "employees"."valid_from" DESC  [["bitemporal_id", 1]]
 +------------+---------+--------+-------------------------+------------+------------+
@@ -61,7 +61,7 @@ ref: https://qiita.com/kyanny/items/d370efe14ef15d9afacb
 |            | 1       | たけし | 2021-06-20 01:44:43 UTC | 2020/01/01 | 2021/04/01 |
 +-2020/01/01-+---------+--------+-------------------------+------------+------------+
 => nil
-[3] pry(main)> Employee.first.histories.print_table(:name)
+[3] pry(main)> Employee.first.histories.print_histories(:name)
   Employee Load (0.2ms)  SELECT "employees".* FROM "employees" WHERE "employees"."valid_from" <= ? AND "employees"."valid_to" > ? AND "employees"."deleted_at" IS NULL ORDER BY "employees"."bitemporal_id" ASC LIMIT ?  [["valid_from", "2021-06-20 13:22:54.269095"], ["valid_to", "2021-06-20 13:22:54.269095"], ["LIMIT", 1]]
   Employee Load (0.1ms)  SELECT "employees".* FROM "employees" WHERE "employees"."deleted_at" IS NULL AND "employees"."bitemporal_id" = ? ORDER BY "employees"."valid_from" DESC  [["bitemporal_id", 1]]
 +------------+--------+
